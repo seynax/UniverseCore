@@ -19,7 +19,7 @@ public class UniverseCore
     public static final String MODID = "universecore";
 	private static final Logger LOGGER = LogUtils.getLogger();
 
-	private static  DeferredRegister<Block> BLOCKS;
+	public static  DeferredRegister<Block> BLOCKS;
 
     public UniverseCore()
     {
