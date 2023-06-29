@@ -26,9 +26,11 @@ public class UniverseCore
          MinecraftForge.EVENT_BUS.register(this);
     }
 
-    public final static void init(String modidIn)
+    public final static DeferredRegister<Block> init(String modidIn)
     {
     	BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, modidIn);
+    	
+    	return BLOCKS;
     }
 
     public final static void register(IEventBus modEventBusIn)
