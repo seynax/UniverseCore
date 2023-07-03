@@ -43,8 +43,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.seynax.universecore.UniverseCore;
 import fr.seynax.universecore.registry.ExtendedRegistry;
+import fr.seynax.universecore.test.UniverseCore;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 /**
@@ -55,13 +55,13 @@ public class UniverseCoreManager
 	private final List<ExtendedRegistry<?>> registries;
 
 	@SafeVarargs
-	public UniverseCoreManager(final String modidIn, final Class<? extends ExtendedRegistry<?>>... registriesClassesIn)
+	public UniverseCoreManager(final String modidIn, final Class<? extends ExtendedRegistry<?>>... customRegistriesClassesIn)
 	{
 		this.registries = new ArrayList<>();
 
 		try
 		{
-			for (final var registryClass : registriesClassesIn)
+			for (final var registryClass : customRegistriesClassesIn)
 			{
 				final var	constructor	= registryClass.getConstructor(String.class);
 				final var	registry	= constructor.newInstance(modidIn);

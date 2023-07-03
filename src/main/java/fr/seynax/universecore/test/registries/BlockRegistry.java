@@ -37,8 +37,9 @@
  * @Author : Seynax (https://github.com/seynax)<br>
  * @Organization : Onsiea Studio (https://github.com/OnsieaStudio)
  */
-package fr.seynax.universecore.registries;
+package fr.seynax.universecore.test.registries;
 
+import fr.seynax.universecore.registries.RegistryBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.registries.RegistryObject;

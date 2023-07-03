@@ -1,11 +1,11 @@
-package fr.seynax.universecore;
+package fr.seynax.universecore.test;
 
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
 import fr.seynax.universecore.manager.UniverseCoreManager;
-import fr.seynax.universecore.registries.BlockRegistry;
+import fr.seynax.universecore.test.registries.BlockRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
