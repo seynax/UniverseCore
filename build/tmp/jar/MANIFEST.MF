@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Specification-Title: UniverseCore
+Specification-Vendor: Seynax
+Specification-Version: 1
+Implementation-Title: UniverseCore
+Implementation-Version: 1.0
+Implementation-Vendor: Seynax
+Implementation-Timestamp: 2023-06-29T20:12:09+0200
+
