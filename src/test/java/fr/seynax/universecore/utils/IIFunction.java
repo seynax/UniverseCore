@@ -37,27 +37,12 @@
  * @Author : Seynax (https://github.com/seynax)<br>
  * @Organization : Onsiea Studio (https://github.com/OnsieaStudio)
  */
-package fr.seynax.universecore.test.registries;
-
-import fr.seynax.universecore.registries.RegistryBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Material;
-import net.minecraftforge.registries.RegistryObject;
+package fr.seynax.universecore.utils;
 
 /**
- *
+ * @param <I> input parameter type in execute method
  */
-public class BlockRegistry extends RegistryBlock
+public interface IIFunction<I>
 {
-	public final RegistryObject<Block> UNIVERSE_CORE_BLOCK_TEST = this.make("test", Material.STONE);
-	// VS :
-	// public final RegistryObject<Block> UNIVERSE_CORE_BLOCK_TEST = BlockRegistry.register("test", () -> new Block(Properties.of(Material.STONE)));
-
-	/**
-	 * @param modidIn
-	 */
-	public BlockRegistry(final String modidIn)
-	{
-		super(modidIn);
-	}
+	void execute(I inputIn);
 }

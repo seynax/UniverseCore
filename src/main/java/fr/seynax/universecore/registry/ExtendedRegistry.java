@@ -8,23 +8,23 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class ExtendedRegistry<T>
 {
-	public final DeferredRegister<T> registry;
+	public final DeferredRegister<T> forgeRegistry;
 
 	public ExtendedRegistry(final String modidIn, final IRegistryInitializer<T> initializerIn)
 	{
-		this.registry = initializerIn.initialize(modidIn);
+		this.forgeRegistry = initializerIn.initialize(modidIn);
 	}
 
 	public final ExtendedRegistry<T> initialize(final IEventBus eventBusIn)
 	{
-		this.registry.register(eventBusIn);
+		this.forgeRegistry.register(eventBusIn);
 
 		return this;
 	}
 
 	public final RegistryObject<T> registerObject(final String idIn, final Supplier<? extends T> supIn)
 	{
-		return this.registry.register(idIn, supIn);
+		return this.forgeRegistry.register(idIn, supIn);
 	}
 
 	/**
@@ -37,9 +37,14 @@ public class ExtendedRegistry<T>
 	 */
 	public final ExtendedRegistry<T> addObject(final String idIn, final Supplier<? extends T> supIn)
 	{
-		this.registry.register(idIn, supIn);
+		this.forgeRegistry.register(idIn, supIn);
 
 		return this;
+	}
+
+	public final DeferredRegister<T> forgeRegistry()
+	{
+		return this.forgeRegistry;
 	}
 
 	public interface IRegistryInitializer<T>

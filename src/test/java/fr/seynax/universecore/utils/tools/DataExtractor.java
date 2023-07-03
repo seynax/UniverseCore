@@ -37,27 +37,62 @@
  * @Author : Seynax (https://github.com/seynax)<br>
  * @Organization : Onsiea Studio (https://github.com/OnsieaStudio)
  */
-package fr.seynax.universecore.test.registries;
+package fr.seynax.universecore.utils.tools;
 
-import fr.seynax.universecore.registries.RegistryBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Material;
-import net.minecraftforge.registries.RegistryObject;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import fr.seynax.universecore.utils.file.FileUtils;
 
 /**
  *
  */
-public class BlockRegistry extends RegistryBlock
+public class DataExtractor
 {
-	public final RegistryObject<Block> UNIVERSE_CORE_BLOCK_TEST = this.make("test", Material.STONE);
-	// VS :
-	// public final RegistryObject<Block> UNIVERSE_CORE_BLOCK_TEST = BlockRegistry.register("test", () -> new Block(Properties.of(Material.STONE)));
-
-	/**
-	 * @param modidIn
-	 */
-	public BlockRegistry(final String modidIn)
+	public final Map<String, List<String>> extract(final List<String> regexesIn, final String contentIn)
 	{
-		super(modidIn);
+		final Map<String, List<String>> extracteds = new LinkedHashMap<>();
+		for (final var regex : regexesIn)
+		{
+			final var	pattern	= Pattern.compile(regex);
+			final var	matcher	= pattern.matcher(contentIn);
+
+			List<String> regexExtracteds = null;
+			while (matcher.find())
+			{
+				if (regexExtracteds == null)
+				{
+					regexExtracteds = extracteds.get(regex);
+					if (regexExtracteds == null)
+					{
+						regexExtracteds = new ArrayList<>();
+						extracteds.put(regex, regexExtracteds);
+					}
+				}
+
+				regexExtracteds.add(matcher.group());
+
+			}
+		}
+
+		return extracteds;
+	}
+
+	public final Map<String, List<String>> extractFromFile(final List<String> regexesIn, final String filePathIn) throws Exception
+	{
+		final var content = FileUtils.content(filePathIn);
+
+		return this.extract(regexesIn, content);
+	}
+
+	public final Map<String, List<String>> extractFromFile(final List<String> regexesIn, final File fileIn) throws Exception
+	{
+		final var content = FileUtils.content(fileIn);
+
+		return this.extract(regexesIn, content);
 	}
 }

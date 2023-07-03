@@ -39,49 +39,42 @@
  */
 package fr.seynax.universecore.manager;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Supplier;
 
 import fr.seynax.universecore.registry.ExtendedRegistry;
-import fr.seynax.universecore.test.UniverseCore;
+import fr.seynax.universecore.registry.Registries;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 /**
  *
  */
 public class UniverseCoreManager
 {
-	private final List<ExtendedRegistry<?>> registries;
+	// TODO blocks registry
+	// TODO items registry
+	// TODO all others registries
 
+	private final Registries				registries;
+	private final ExtendedRegistry<Block>	registryBlock;
+
+	@SuppressWarnings("unchecked")
 	@SafeVarargs
 	public UniverseCoreManager(final String modidIn, final Class<? extends ExtendedRegistry<?>>... customRegistriesClassesIn)
 	{
-		this.registries = new ArrayList<>();
-
-		try
-		{
-			for (final var registryClass : customRegistriesClassesIn)
-			{
-				final var	constructor	= registryClass.getConstructor(String.class);
-				final var	registry	= constructor.newInstance(modidIn);
-
-				this.registries.add(registry);
-			}
-		}
-		catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
-		{
-			UniverseCore.LOGGER.error("Failed to make new instance from registry class object with class(String modidIn) supposed constructor !");
-
-			e.printStackTrace();
-		}
+		this.registries		= new Registries(modidIn, customRegistriesClassesIn);
+		this.registryBlock	= (ExtendedRegistry<Block>) this.registries.get(ForgeRegistries.BLOCKS.getRegistryKey().toString());
 	}
 
 	public final UniverseCoreManager register(final IEventBus modEventBusIn)
 	{
 		// Mod event bus register
 
-		for (final var registry : this.registries)
+		for (final var registry : this.registries.values())
 		{
 			registry.initialize(modEventBusIn);
 		}
@@ -89,5 +82,22 @@ public class UniverseCoreManager
 		// TODO Forge event bus register
 
 		return this;
+	}
+
+	// Block register function
+
+	public final RegistryObject<Block> block(final String idIn, final Supplier<? extends Block> blockSupplierIn)
+	{
+		return this.registryBlock.registerObject(idIn, blockSupplierIn);
+	}
+
+	public final RegistryObject<Block> block(final String idIn, final Properties propertiesIn)
+	{
+		return this.registryBlock.registerObject(idIn, () -> new Block(propertiesIn));
+	}
+
+	public final RegistryObject<Block> block(final String idIn, final Material materialIn)
+	{
+		return this.registryBlock.registerObject(idIn, () -> new Block(Properties.of(materialIn)));
 	}
 }
