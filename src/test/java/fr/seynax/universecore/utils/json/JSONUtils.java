@@ -37,62 +37,53 @@
  * @Author : Seynax (https://github.com/seynax)<br>
  * @Organization : Onsiea Studio (https://github.com/OnsieaStudio)
  */
-package fr.seynax.universecore.utils.tools;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import fr.seynax.universecore.utils.file.FileUtils;
+package fr.seynax.universecore.utils.json;
 
 /**
  *
  */
-public class DataExtractor
+public class JSONUtils
 {
-	public final static Map<String, List<String>> extract(final List<String> regexesIn, final String contentIn)
+	public final static void show(final JSONArray arrayIn)
 	{
-		final Map<String, List<String>> extracteds = new LinkedHashMap<>();
-		for (final var regex : regexesIn)
+		System.out.println(JSONUtils.content("", arrayIn));
+	}
+
+	public final static void show(final String prefixIn, final JSONArray arrayIn)
+	{
+		System.out.println(JSONUtils.content(prefixIn, arrayIn));
+	}
+
+	public final static String content(final JSONArray arrayIn)
+	{
+		return JSONUtils.content("", arrayIn);
+	}
+
+	public final static String content(final String prefixIn, final JSONArray arrayIn)
+	{
+		final var content = new StringBuilder();
+
+		content.append(prefixIn + "- " + arrayIn.key() + " [" + arrayIn.count() + "] :\r\n" + prefixIn + "{\r\n");
+		for (var i = 0; i < arrayIn.count(); i++)
 		{
-			final var	pattern	= Pattern.compile(regex);
-			final var	matcher	= pattern.matcher(contentIn);
+			final var child = arrayIn.get(i);
 
-			List<String> regexExtracteds = null;
-			while (matcher.find())
+			if (child.isArray())
 			{
-				if (regexExtracteds == null)
-				{
-					regexExtracteds = extracteds.get(regex);
-					if (regexExtracteds == null)
-					{
-						regexExtracteds = new ArrayList<>();
-						extracteds.put(regex, regexExtracteds);
-					}
-				}
+				content.append(JSONUtils.content(prefixIn + "\t", (JSONArray) child));
+			}
+			else
+			{
+				content.append(prefixIn).append("\t- ").append(child.key()).append(" -> ").append(((JSONObject) child).value());
+			}
 
-				regexExtracteds.add(matcher.group());
-
+			if (i + 1 < arrayIn.count())
+			{
+				content.append("\r\n");
 			}
 		}
+		content.append("\r\n" + prefixIn + "}");
 
-		return extracteds;
-	}
-
-	public final static Map<String, List<String>> extractFromFile(final List<String> regexesIn, final String filePathIn) throws Exception
-	{
-		final var content = FileUtils.content(filePathIn);
-
-		return DataExtractor.extract(regexesIn, content);
-	}
-
-	public final static Map<String, List<String>> extractFromFile(final List<String> regexesIn, final File fileIn) throws Exception
-	{
-		final var content = FileUtils.content(fileIn);
-
-		return DataExtractor.extract(regexesIn, content);
+		return content.toString();
 	}
 }

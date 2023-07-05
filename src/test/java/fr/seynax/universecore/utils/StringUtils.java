@@ -37,62 +37,15 @@
  * @Author : Seynax (https://github.com/seynax)<br>
  * @Organization : Onsiea Studio (https://github.com/OnsieaStudio)
  */
-package fr.seynax.universecore.utils.tools;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import fr.seynax.universecore.utils.file.FileUtils;
+package fr.seynax.universecore.utils;
 
 /**
  *
  */
-public class DataExtractor
+public class StringUtils
 {
-	public final static Map<String, List<String>> extract(final List<String> regexesIn, final String contentIn)
+	public final static String removeUnusedBlanks(final String contentIn)
 	{
-		final Map<String, List<String>> extracteds = new LinkedHashMap<>();
-		for (final var regex : regexesIn)
-		{
-			final var	pattern	= Pattern.compile(regex);
-			final var	matcher	= pattern.matcher(contentIn);
-
-			List<String> regexExtracteds = null;
-			while (matcher.find())
-			{
-				if (regexExtracteds == null)
-				{
-					regexExtracteds = extracteds.get(regex);
-					if (regexExtracteds == null)
-					{
-						regexExtracteds = new ArrayList<>();
-						extracteds.put(regex, regexExtracteds);
-					}
-				}
-
-				regexExtracteds.add(matcher.group());
-
-			}
-		}
-
-		return extracteds;
-	}
-
-	public final static Map<String, List<String>> extractFromFile(final List<String> regexesIn, final String filePathIn) throws Exception
-	{
-		final var content = FileUtils.content(filePathIn);
-
-		return DataExtractor.extract(regexesIn, content);
-	}
-
-	public final static Map<String, List<String>> extractFromFile(final List<String> regexesIn, final File fileIn) throws Exception
-	{
-		final var content = FileUtils.content(fileIn);
-
-		return DataExtractor.extract(regexesIn, content);
+		return contentIn.replaceAll("^\\s+", "").replaceAll("\\s+$", "");
 	}
 }

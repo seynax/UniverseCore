@@ -37,62 +37,31 @@
  * @Author : Seynax (https://github.com/seynax)<br>
  * @Organization : Onsiea Studio (https://github.com/OnsieaStudio)
  */
-package fr.seynax.universecore.utils.tools;
+package fr.seynax.universecore.utils.file.json;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 import fr.seynax.universecore.utils.file.FileUtils;
+import fr.seynax.universecore.utils.json.JSONArray;
 
 /**
  *
  */
-public class DataExtractor
+public class JSONReader
 {
-	public final static Map<String, List<String>> extract(final List<String> regexesIn, final String contentIn)
+	// JSON with FILE, use JSONParser for string content or all lines contained in collection
+
+	public final static JSONArray parse(final String filePathIn) throws Exception
 	{
-		final Map<String, List<String>> extracteds = new LinkedHashMap<>();
-		for (final var regex : regexesIn)
-		{
-			final var	pattern	= Pattern.compile(regex);
-			final var	matcher	= pattern.matcher(contentIn);
+		final var lines = FileUtils.lines(filePathIn);
 
-			List<String> regexExtracteds = null;
-			while (matcher.find())
-			{
-				if (regexExtracteds == null)
-				{
-					regexExtracteds = extracteds.get(regex);
-					if (regexExtracteds == null)
-					{
-						regexExtracteds = new ArrayList<>();
-						extracteds.put(regex, regexExtracteds);
-					}
-				}
-
-				regexExtracteds.add(matcher.group());
-
-			}
-		}
-
-		return extracteds;
+		return JSONParser.parse(lines);
 	}
 
-	public final static Map<String, List<String>> extractFromFile(final List<String> regexesIn, final String filePathIn) throws Exception
+	public final static JSONArray parse(final File filePathIn) throws Exception
 	{
-		final var content = FileUtils.content(filePathIn);
+		final var lines = FileUtils.lines(filePathIn);
 
-		return DataExtractor.extract(regexesIn, content);
-	}
-
-	public final static Map<String, List<String>> extractFromFile(final List<String> regexesIn, final File fileIn) throws Exception
-	{
-		final var content = FileUtils.content(fileIn);
-
-		return DataExtractor.extract(regexesIn, content);
+		return JSONParser.parse(lines);
 	}
 }

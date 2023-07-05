@@ -37,62 +37,106 @@
  * @Author : Seynax (https://github.com/seynax)<br>
  * @Organization : Onsiea Studio (https://github.com/OnsieaStudio)
  */
-package fr.seynax.universecore.utils.tools;
+package fr.seynax.universecore.utils.json;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import fr.seynax.universecore.utils.file.FileUtils;
+import java.util.Objects;
 
 /**
  *
  */
-public class DataExtractor
+public class JSONValue
 {
-	public final static Map<String, List<String>> extract(final List<String> regexesIn, final String contentIn)
+	private final String value;
+
+	public JSONValue(final String valueIn)
 	{
-		final Map<String, List<String>> extracteds = new LinkedHashMap<>();
-		for (final var regex : regexesIn)
+		this.value = valueIn;
+	}
+
+	public String value()
+	{
+		return this.value;
+	}
+
+	@Override
+	public String toString()
+	{
+		return this.value;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(this.value);
+	}
+
+	@Override
+	public boolean equals(final Object obj)
+	{
+		if (this == obj)
 		{
-			final var	pattern	= Pattern.compile(regex);
-			final var	matcher	= pattern.matcher(contentIn);
+			return true;
+		}
+		if (obj == null || this.getClass() != obj.getClass())
+		{
+			return false;
+		}
+		final var other = (JSONValue) obj;
+		return Objects.equals(this.value, other.value);
+	}
 
-			List<String> regexExtracteds = null;
-			while (matcher.find())
-			{
-				if (regexExtracteds == null)
-				{
-					regexExtracteds = extracteds.get(regex);
-					if (regexExtracteds == null)
-					{
-						regexExtracteds = new ArrayList<>();
-						extracteds.put(regex, regexExtracteds);
-					}
-				}
+	public final static class Builder
+	{
+		private String	value;
+		private boolean	isRemoved;
 
-				regexExtracteds.add(matcher.group());
-
-			}
+		public Builder()
+		{
 		}
 
-		return extracteds;
-	}
+		public Builder(final String valueIn)
+		{
+			this.value = valueIn;
+		}
 
-	public final static Map<String, List<String>> extractFromFile(final List<String> regexesIn, final String filePathIn) throws Exception
-	{
-		final var content = FileUtils.content(filePathIn);
+		public String value()
+		{
+			return this.value;
+		}
 
-		return DataExtractor.extract(regexesIn, content);
-	}
+		public Builder value(final String valueIn) throws Exception
+		{
+			if (this.isRemoved)
+			{
+				throw new Exception("[ERROR] Cannot set value of removed json value  !");
+			}
 
-	public final static Map<String, List<String>> extractFromFile(final List<String> regexesIn, final File fileIn) throws Exception
-	{
-		final var content = FileUtils.content(fileIn);
+			this.value = valueIn;
 
-		return DataExtractor.extract(regexesIn, content);
+			return this;
+		}
+
+		public Builder remove()
+		{
+			this.value		= null;
+			this.isRemoved	= true;
+
+			return this;
+		}
+
+		public boolean isRemoved()
+		{
+			return this.isRemoved;
+		}
+
+		public JSONValue build() throws Exception
+		{
+			if (this.isRemoved)
+			{
+				throw new Exception("[ERROR] Cannot build removed json value !");
+			}
+
+			return new JSONValue(this.value);
+		}
 	}
 }
